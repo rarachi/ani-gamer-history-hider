@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         動畫瘋隱藏觀看紀錄
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  在每個卡片右上角新增隱藏按鈕，點擊後即可隱藏該卡片，並將該卡片的標題存入 localStorage，當重新整理頁面時，隱藏的卡片將不會再出現。在標題下方新增還原1筆紀錄按鈕，點擊後即可還原最後一筆隱藏的卡片。
+// @version      1.1
+// @description  在每個卡片右上角新增隱藏按鈕，點擊後即可隱藏該卡片，並將該卡片的標題存入 localStorage，當重新整理頁面時，隱藏的卡片將不會再出現。在標題下方新增切換隱藏項目按鈕，點擊後即可切換顯示隱藏的卡片。
 // @author       rarachi
 // @match        https://ani.gamer.com.tw/viewList.php*
 // @updateURL    https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_history_hide_script.user.js
@@ -13,7 +13,8 @@
 (function () {
   "use strict";
 
-  const prefix = "hidden_";
+  let showHidden = JSON.parse(localStorage.getItem("aniShowHidden") || "false");
+
   //隱藏紀錄
   const addCloseButton = (card) => {
     const closeButton = document.createElement("button");
@@ -28,12 +29,19 @@
     closeButton.onclick = () => {
       card.parentElement.style.display = "none";
       const animeTitle = card.querySelector(".history-anime-title").textContent;
-      const hiddenCards = JSON.parse(
-        localStorage.getItem("hiddenCards") || "[]"
-      );
-      hiddenCards.push(animeTitle);
+      let hiddenCards = JSON.parse(localStorage.getItem("hiddenCards") || "[]");
+
+      if (hiddenCards.includes(animeTitle)) {
+        // 如果動畫已經在隱藏列表中，則從列表中移除
+        const index = hiddenCards.indexOf(animeTitle);
+        hiddenCards.splice(index, 1);
+      } else {
+        // 否則，將動畫添加到隱藏列表中
+        hiddenCards.push(animeTitle);
+      }
       localStorage.setItem("hiddenCards", JSON.stringify(hiddenCards));
     };
+
     card.style.position = "relative";
     card.appendChild(closeButton);
   };
@@ -54,47 +62,33 @@
     const animeTitle = card.querySelector(".history-anime-title").textContent;
     addCloseButton(card);
     if (hiddenCards.includes(animeTitle)) {
-      card.parentElement.style.display = "none";
+      card.parentElement.style.display = showHidden ? "block" : "none";
+    } else {
+      card.parentElement.style.display = showHidden ? "none" : "block";
     }
   });
 
-  //回復紀錄
+  // 切換隱藏項目
   const titleBlock = document.querySelector(".theme-title-block");
-  const restoreButtonsContainer = document.createElement("div");
-
-  const restoreAllButton = document.createElement("button");
-  restoreAllButton.textContent = "回復全部觀看紀錄";
-  restoreAllButton.style.backgroundColor = "transparent";
-  restoreAllButton.style.color = "white";
-  restoreAllButton.addEventListener("click", () => {
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith(prefix)) {
-        localStorage.removeItem(key);
-      }
-    });
-    localStorage.removeItem("hiddenCards");
+  const toggleHiddenButton = document.createElement("button");
+  toggleHiddenButton.style.backgroundColor = "transparent";
+  toggleHiddenButton.style.color = "white";
+  toggleHiddenButton.style.border = "1px solid white";
+  toggleHiddenButton.style.borderRadius = "5px";
+  toggleHiddenButton.style.boxShadow = "none";
+  toggleHiddenButton.style.padding = "10px";
+  toggleHiddenButton.addEventListener("click", () => {
+    const currentShowHidden = JSON.parse(
+      localStorage.getItem("aniShowHidden") || "false"
+    );
+    localStorage.setItem("aniShowHidden", JSON.stringify(!currentShowHidden));
     location.reload();
   });
-  //暫停使用這個按鈕
-  //restoreButtonsContainer.appendChild(restoreAllButton); 
+  titleBlock.appendChild(toggleHiddenButton);
 
-  const restoreLastButton = document.createElement("button");
-  restoreLastButton.textContent = "還原1筆紀錄";
-  restoreLastButton.style.backgroundColor = "transparent";
-  restoreLastButton.style.color = "white";
-  restoreLastButton.style.border = "1px solid white";
-  restoreLastButton.style.borderRadius = "5px";
-  restoreLastButton.style.boxShadow = "none";
-  restoreLastButton.style.padding = "10px";
-  restoreLastButton.addEventListener("click", () => {
-    const hiddenCards = JSON.parse(localStorage.getItem("hiddenCards") || "[]");
-    if (hiddenCards.length > 0) {
-      localStorage.removeItem(prefix + hiddenCards.pop());
-      localStorage.setItem("hiddenCards", JSON.stringify(hiddenCards));
-      location.reload();
-    }
-  });
-  restoreButtonsContainer.appendChild(restoreLastButton);
-
-  titleBlock.appendChild(restoreButtonsContainer);
+  // 在頁面加載時設置按鈕的初始文字
+  const initialShowHidden = JSON.parse(
+    localStorage.getItem("aniShowHidden") || "false"
+  );
+  toggleHiddenButton.textContent = initialShowHidden ? "返回" : "切換隱藏項目";
 })();
