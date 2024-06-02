@@ -12,3 +12,4 @@ https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_his
 沒有提供匯入/匯出功能  
 被隱藏的項目存放在瀏覽器的localstorage的hiddenCards裡  
 
+![示意圖](images/sample.jpg)
