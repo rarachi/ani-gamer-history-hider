@@ -4,7 +4,7 @@
 
 ## 開始使用
 
-安裝Tampermonkey後可以透過連結安裝
+安裝Tampermonkey後可以透過連結安裝  
 https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_history_hide_script.user.js
 
 ## 詳細內容
