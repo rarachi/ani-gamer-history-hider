@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         動畫瘋隱藏觀看紀錄
+// @name         動畫瘋隱藏觀看紀錄(簡潔版)
 // @namespace    http://tampermonkey.net/
 // @version      1.1
-// @description  在每個卡片右上角新增隱藏按鈕，點擊後即可隱藏該卡片，並將該卡片的標題存入 localStorage，當重新整理頁面時，隱藏的卡片將不會再出現。在標題下方新增切換隱藏項目按鈕，點擊後即可切換顯示隱藏的卡片。
+// @description  在每個卡片右上角新增隱藏按鈕，點擊後即可隱藏該卡片。點擊"觀看紀錄"可以切換顯示隱藏的卡片。
 // @author       rarachi
 // @match        https://ani.gamer.com.tw/viewList.php*
 // @updateURL    https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_history_hide_script.user.js
@@ -15,7 +15,7 @@
 
   let showHidden = JSON.parse(localStorage.getItem("aniShowHidden") || "false");
 
-  //隱藏紀錄
+  //隱藏紀錄按鈕
   const addCloseButton = (card) => {
     const closeButton = document.createElement("button");
     closeButton.textContent = "x";
@@ -23,9 +23,6 @@
     closeButton.style.right = "0";
     closeButton.style.top = "0";
     closeButton.style.backgroundColor = "transparent";
-    closeButton.style.color = "rgb(58, 58, 60)";
-    closeButton.style.border = "none";
-    closeButton.style.boxShadow = "none";
     closeButton.style.opacity = "0";
     closeButton.onclick = () => {
       card.parentElement.style.display = "none";
