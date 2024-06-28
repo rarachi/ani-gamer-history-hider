@@ -5,8 +5,8 @@
 // @description  在每個卡片右上角新增隱藏按鈕，點擊後即可隱藏該卡片。點擊"觀看紀錄"可以切換顯示隱藏的卡片。
 // @author       rarachi
 // @match        https://ani.gamer.com.tw/viewList.php*
-// @updateURL    https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_history_hide_script.user.js
-// @downloadURL  https://raw.githubusercontent.com/rarachi/ani-gamer-history-hider/main/anime_history_hide_script.user.js
+// @updateURL    https://github.com/rarachi/ani-gamer-history-hider/raw/main/anime_history_hide_script_no_button.user.js
+// @downloadURL  https://github.com/rarachi/ani-gamer-history-hider/raw/main/anime_history_hide_script_no_button.user.js
 // @grant        none
 // ==/UserScript==
 
